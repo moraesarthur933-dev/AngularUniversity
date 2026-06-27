@@ -7,7 +7,7 @@ import { University, SearchHistory } from '../models/university.model';
   providedIn: 'root'
 })
 export class UniversityService {
-  private apiUrl = 'https://universities.hipolabs.com/search';
+  private apiUrl = 'http://universities.hipolabs.com/search';
   private historyKey = 'angular_university_history';
   private favoritesKey = 'angular_university_favorites';
 
