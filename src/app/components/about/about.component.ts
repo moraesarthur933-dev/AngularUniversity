@@ -6,9 +6,9 @@ import { Component } from '@angular/core';
   standalone: false
 })
 export class AboutComponent {
-  developerName: string = 'Estudante de Engenharia / Tecnologia';
-  projectName: string = 'Angular University – Catálogo Mundial de Universidades';
-  academicTerm: string = 'Disciplina de Desenvolvimento de Aplicações Web';
+  developerName: string = 'Arthur Moraes De Souza';
+  projectName: string = 'Angular University - Catálogo Mundial de Universidades';
+  academicTerm: string = 'programação web de alta performance';
   
   technologies = [
     { name: 'Angular (Framework)', icon: 'bi-box-seam', description: 'Estruturação da aplicação modular baseada em componentes.' },

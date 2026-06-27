@@ -1,4 +1,4 @@
-# Angular University – Catálogo Mundial de Universidades
+    # Angular University – Catálogo Mundial de Universidades
 
 Este projeto é uma aplicação web responsiva construída em **Angular** e **TypeScript** que permite consultar e catalogar informações de universidades de diversos países do mundo em tempo real. Os dados são obtidos dinamicamente da API REST pública do **Hipo Labs**.
 
@@ -11,17 +11,22 @@ Aqui estão as visualizações das principais telas projetadas para a aplicaçã
 ### 1. Tela Inicial (Pesquisa e Histórico)
 Interface de busca por país, com atalhos de buscas populares, histórico local de pesquisas efetuadas e gráfico dinâmico de distribuição de resultados utilizando Chart.js.
 
-![Tela Inicial](public/images/home_screen.png)
+![Tela Inicial](public/images/inicio1.png)
+![Tela Inicia2](public/images/inicio2.png)
 
-### 2. Tela de Resultados (Listagem e Dashboard)
-Painel detalhado exibindo a quantidade de universidades, domínios únicos e quantidade geral de favoritas. Lista paginada dos resultados com filtros de busca local instantânea (sem novas requisições) e ordenação alfabética (A-Z e Z-A).
 
-![Tela de Resultados](public/images/results_screen.png)
-
-### 3. Tela de Favoritos (Persistência)
+### 2. Tela de Favoritos (Persistência)
 Painel contendo todas as universidades marcadas como favoritas pelo usuário, mantidas permanentemente no navegador via Local Storage e com suporte a filtragem local por texto.
 
-![Tela de Favoritos](public/images/favorites_screen.png)
+![Tela de Favoritos](public/images/favoritos1.png)
+
+### 3. tela de sobre 
+
+
+![Tela de sobre1](public/images/sobre1.png)
+
+![Tela de sobre2](public/images/sobre2.png)
+![Tela de sobre3](public/images/sobre3.png)
 
 ---
 
