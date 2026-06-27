@@ -1,0 +1,125 @@
+<div class="container py-5 animate-fade-in">
+  <!-- Title -->
+  <div class="d-flex align-items-center justify-content-between mb-5">
+    <h2 class="fw-bold mb-0 text-gradient">
+      <i class="bi bi-heart-fill text-danger me-2"></i>Minhas Favoritas
+    </h2>
+    <a routerLink="/home" class="btn btn-outline-primary rounded-pill hover-lift">
+      <i class="bi bi-search me-2"></i>Buscar Mais
+    </a>
+  </div>
+
+  <!-- Empty Favorites State (Absolute Empty) -->
+  <div *ngIf="favorites.length === 0" class="text-center py-5 my-5 bg-white shadow-sm rounded-4 border p-5 animate-slide-in">
+    <i class="bi bi-heart display-1 text-danger opacity-25 mb-4 d-block animate-pulse"></i>
+    <h3 class="fw-bold mb-3">Você não tem favoritas salvas</h3>
+    <p class="text-muted col-md-6 mx-auto mb-4">
+      Navegue pelos resultados de pesquisa dos países e clique no ícone de coração para salvar universidades que você deseja acompanhar.
+    </p>
+    <a routerLink="/home" class="btn btn-primary rounded-pill px-5 py-3 fs-5 hover-scale">
+      Ir para Pesquisa
+    </a>
+  </div>
+
+  <!-- Content Panel (When favorites exist) -->
+  <div *ngIf="favorites.length > 0">
+    <!-- Filter panel -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8 col-lg-6">
+          <label class="form-label fw-semibold text-muted small text-uppercase">Filtrar Favoritas</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-0 text-muted">
+              <i class="bi bi-filter-left"></i>
+            </span>
+            <input 
+              type="text" 
+              [(ngModel)]="filterText" 
+              (ngModelChange)="applyFilter()" 
+              class="form-control bg-light border-0 shadow-none" 
+              placeholder="Filtre por nome ou país..."
+            />
+            <button 
+              *ngIf="filterText" 
+              (click)="filterText = ''; applyFilter()" 
+              class="btn btn-light border-0" 
+              type="button"
+            >
+              <i class="bi bi-x-circle-fill text-muted"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-6 text-md-end mt-3 mt-md-0">
+          <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-semibold">
+            {{ filteredFavorites.length }} de {{ favorites.length }} favoritas exibidas
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Empty State -->
+    <div *ngIf="filteredFavorites.length === 0" class="text-center py-5 my-4 bg-light rounded-4 shadow-sm">
+      <i class="bi bi-search display-2 text-muted opacity-50 mb-3 d-block"></i>
+      <h5 class="fw-bold text-muted">Nenhum favorito corresponde à busca</h5>
+      <p class="text-muted small">Tente alterar seu termo de filtro.</p>
+    </div>
+
+    <!-- Favorites Grid -->
+    <div class="row g-4">
+      <div *ngFor="let uni of filteredFavorites" class="col-lg-6 animate-slide-in">
+        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-university position-relative border-top border-danger border-4">
+          <!-- Card Header -->
+          <div class="card-header border-0 bg-light py-3 px-4 d-flex justify-content-between align-items-center">
+            <span class="badge bg-secondary text-uppercase px-3 py-2 rounded-pill fw-bold">
+              <i class="bi bi-geo-alt-fill me-1"></i>{{ uni.alpha_two_code }}
+            </span>
+            <span class="small text-muted fw-semibold text-primary">{{ uni.country }}</span>
+          </div>
+
+          <!-- Card Body -->
+          <div class="card-body p-4">
+            <h5 class="card-title fw-bold mb-3 text-dark-emphasis pe-4">{{ uni.name }}</h5>
+            
+            <!-- State / Province -->
+            <p *ngIf="uni['state-province']" class="small text-muted mb-2">
+              <i class="bi bi-map me-2 text-primary"></i>Estado/Província: {{ uni['state-province'] }}
+            </p>
+
+            <!-- Domains -->
+            <div class="mb-4">
+              <div class="small fw-semibold text-muted mb-1">Domínios Registrados:</div>
+              <div class="d-flex flex-wrap gap-1">
+                <span *ngFor="let domain of uni.domains" class="badge bg-secondary-subtle text-secondary px-2 py-1">
+                  {{ domain }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex gap-2">
+              <button 
+                *ngFor="let page of uni.web_pages" 
+                (click)="openWebsite(page)" 
+                class="btn btn-outline-danger rounded-pill px-3 py-2 flex-grow-1 text-truncate hover-lift text-start"
+                title="Visitar Site Oficial"
+              >
+                <i class="bi bi-box-arrow-up-right me-2"></i>
+                {{ page }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Favorite Toggle (Remove) -->
+          <button 
+            (click)="removeFavorite(uni)" 
+            class="btn btn-favorite position-absolute top-0 end-0 m-3 border-0 rounded-circle d-flex align-items-center justify-content-center bg-danger-subtle hover-scale"
+            style="width: 40px; height: 40px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 2;"
+            title="Remover das Favoritas"
+          >
+            <i class="bi bi-heart-fill text-danger fs-5 animate-pulse"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

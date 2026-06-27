@@ -1,0 +1,216 @@
+<div class="container py-5 animate-fade-in">
+  <!-- Back Button & Title -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <a routerLink="/home" class="btn btn-outline-secondary rounded-pill hover-lift">
+      <i class="bi bi-arrow-left me-2"></i>Voltar para pesquisa
+    </a>
+    <h2 class="h3 fw-bold mb-0 text-gradient text-end">
+      Resultados: {{ country }}
+    </h2>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-5 my-5">
+    <div class="spinner-grow text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+    <h5 class="text-muted">Buscando universidades...</h5>
+    <p class="small text-muted">Consultando a API REST pública do Hipo Labs.</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && error" class="alert alert-danger border-0 rounded-4 shadow-sm p-4 text-center my-4 animate-slide-in" role="alert">
+    <i class="bi bi-exclamation-triangle-fill display-5 text-danger mb-3 d-block"></i>
+    <h4 class="alert-heading fw-bold">Ops! Algo deu errado</h4>
+    <p class="mb-3">{{ error }}</p>
+    <button (click)="fetchUniversities()" class="btn btn-danger rounded-pill px-4">
+      <i class="bi bi-arrow-clockwise me-2"></i>Tentar Novamente
+    </button>
+  </div>
+
+  <!-- Content Loaded -->
+  <div *ngIf="!loading && !error">
+    
+    <!-- Dashboard Estatístico -->
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center h-100 bg-primary-subtle text-primary border-start border-primary border-4">
+          <div class="display-5 fw-bold mb-1">{{ totalReturned }}</div>
+          <div class="text-uppercase fw-semibold tracking-wider small">Universidades</div>
+          <small class="text-muted d-block mt-2">Retornadas nesta consulta</small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center h-100 bg-success-subtle text-success border-start border-success border-4">
+          <div class="display-5 fw-bold mb-1">{{ uniqueDomainsCount }}</div>
+          <div class="text-uppercase fw-semibold tracking-wider small">Domínios Únicos</div>
+          <small class="text-muted d-block mt-2">Canais de e-mail e web distintos</small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center h-100 bg-danger-subtle text-danger border-start border-danger border-4">
+          <div class="display-5 fw-bold mb-1">{{ totalFavorites }}</div>
+          <div class="text-uppercase fw-semibold tracking-wider small">Favoritas</div>
+          <small class="text-muted d-block mt-2">Salvas localmente no navegador</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter & Sort Panel -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+      <div class="row g-3 align-items-center">
+        <!-- Local Search Filter -->
+        <div class="col-lg-5">
+          <label class="form-label fw-semibold text-muted small text-uppercase">Filtrar por nome localmente</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-0 text-muted">
+              <i class="bi bi-filter"></i>
+            </span>
+            <input 
+              type="text" 
+              [(ngModel)]="filterText" 
+              (ngModelChange)="applyFilterAndSort()" 
+              class="form-control bg-light border-0 shadow-none" 
+              placeholder="Filtre ex: 'Federal', 'State'..."
+            />
+            <button 
+              *ngIf="filterText" 
+              (click)="filterText = ''; applyFilterAndSort()" 
+              class="btn btn-light border-0" 
+              type="button"
+            >
+              <i class="bi bi-x-circle-fill text-muted"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sort -->
+        <div class="col-md-6 col-lg-3">
+          <label class="form-label fw-semibold text-muted small text-uppercase">Ordenar por Nome</label>
+          <select 
+            [(ngModel)]="sortBy" 
+            (change)="applyFilterAndSort()" 
+            class="form-select bg-light border-0 shadow-none"
+          >
+            <option value="asc">Ordem Alfabética (A-Z)</option>
+            <option value="desc">Ordem Inversa (Z-A)</option>
+          </select>
+        </div>
+
+        <!-- Page Size -->
+        <div class="col-md-6 col-lg-4">
+          <label class="form-label fw-semibold text-muted small text-uppercase">Itens por página</label>
+          <select 
+            [value]="pageSize" 
+            (change)="onPageSizeChange($event)" 
+            class="form-select bg-light border-0 shadow-none"
+          >
+            <option *ngFor="let option of pageSizeOptions" [value]="option">
+              {{ option }} universidades por página
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- No results from local filter -->
+    <div *ngIf="filteredUniversities.length === 0" class="text-center py-5 my-4 bg-light rounded-4 shadow-sm">
+      <i class="bi bi-search display-2 text-muted opacity-50 mb-3 d-block"></i>
+      <h5 class="fw-bold text-muted">Nenhum resultado encontrado</h5>
+      <p class="text-muted small">Tente ajustar o termo de filtro local ou busque por outro país.</p>
+    </div>
+
+    <!-- Results Grid -->
+    <div *ngIf="filteredUniversities.length > 0">
+      <div class="row g-4 mb-4">
+        <div *ngFor="let uni of paginatedUniversities" class="col-lg-6 animate-slide-in">
+          <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-university position-relative">
+            <!-- Header bar with flag / country code -->
+            <div class="card-header border-0 bg-light py-3 px-4 d-flex justify-content-between align-items-center">
+              <span class="badge bg-primary text-uppercase px-3 py-2 rounded-pill fw-bold">
+                <i class="bi bi-geo-alt-fill me-1"></i>{{ uni.alpha_two_code }}
+              </span>
+              <span class="small text-muted">{{ uni.country }}</span>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body p-4">
+              <h5 class="card-title fw-bold mb-3 text-dark-emphasis pe-4">{{ uni.name }}</h5>
+              
+              <!-- State / Province -->
+              <p *ngIf="uni['state-province']" class="small text-muted mb-2">
+                <i class="bi bi-map me-2 text-primary"></i>Estado/Província: {{ uni['state-province'] }}
+              </p>
+
+              <!-- Domains list -->
+              <div class="mb-4">
+                <div class="small fw-semibold text-muted mb-1">Domínios Registrados:</div>
+                <div class="d-flex flex-wrap gap-1">
+                  <span *ngFor="let domain of uni.domains" class="badge bg-secondary-subtle text-secondary px-2 py-1">
+                    {{ domain }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="d-flex gap-2">
+                <!-- Open Webpage -->
+                <button 
+                  *ngFor="let page of uni.web_pages" 
+                  (click)="openWebsite(page)" 
+                  class="btn btn-outline-primary rounded-pill px-3 py-2 flex-grow-1 text-truncate hover-lift text-start"
+                  title="Visitar Site Oficial"
+                >
+                  <i class="bi bi-box-arrow-up-right me-2"></i>
+                  {{ page }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Favorite toggle button inside card -->
+            <button 
+              (click)="toggleFavorite(uni)" 
+              class="btn btn-favorite position-absolute top-0 end-0 m-3 border-0 rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 40px; height: 40px; background-color: rgba(255,255,255,0.85); box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 2;"
+              [title]="isFavorite(uni) ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos'"
+            >
+              <i 
+                class="bi text-danger fs-5" 
+                [ngClass]="isFavorite(uni) ? 'bi-heart-fill' : 'bi-heart'"
+              ></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination Footer -->
+      <nav class="d-flex flex-column flex-md-row justify-content-between align-items-center p-4 card border-0 shadow-sm rounded-4">
+        <div class="mb-3 mb-md-0 text-muted small">
+          Exibindo de <strong>{{ (currentPage - 1) * pageSize + 1 }}</strong> a 
+          <strong>{{ (currentPage * pageSize) > filteredUniversities.length ? filteredUniversities.length : (currentPage * pageSize) }}</strong> 
+          de <strong>{{ filteredUniversities.length }}</strong> universidades
+        </div>
+
+        <ul class="pagination pagination-sm mb-0 rounded-pill border-0 overflow-hidden">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button (click)="prevPage()" class="page-link py-2 px-3 border-0 bg-light" type="button">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+          </li>
+          
+          <li class="page-item active">
+            <span class="page-link py-2 px-3 border-0 bg-primary text-white">
+              Página {{ currentPage }} de {{ totalPages }}
+            </span>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button (click)="nextPage()" class="page-link py-2 px-3 border-0 bg-light" type="button">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

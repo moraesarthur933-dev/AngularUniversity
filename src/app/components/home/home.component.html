@@ -1,0 +1,127 @@
+<div class="container py-5 animate-fade-in">
+  <!-- Hero Section -->
+  <div class="row align-items-center mb-5 hero-section py-4 px-3 rounded-4 shadow-sm bg-gradient text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+    <div class="col-lg-8 z-1">
+      <h1 class="display-4 fw-bold mb-3">Angular University</h1>
+      <p class="lead mb-4">Catálogo mundial de Universidades com Angular. Encontre informações institucionais, domínios e websites de universidades de qualquer país do mundo de forma simples e rápida.</p>
+      
+      <!-- Search Box inside Hero -->
+      <form (ngSubmit)="onSearch()" class="search-form bg-white p-2 rounded-pill shadow-sm d-flex align-items-center">
+        <div class="input-group">
+          <span class="input-group-text bg-transparent border-0 text-muted fs-5 ps-3">
+            <i class="bi bi-search"></i>
+          </span>
+          <input 
+            type="text" 
+            name="searchQuery" 
+            [(ngModel)]="searchQuery" 
+            class="form-control border-0 shadow-none fs-5 ps-2" 
+            placeholder="Digite o nome de um país (ex: Brazil, Canada...)" 
+            required
+          />
+          <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fs-5 fw-semibold hover-scale">
+            Buscar
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="col-lg-4 text-center d-none d-lg-block z-1">
+      <i class="bi bi-mortarboard-fill text-white-50" style="font-size: 10rem; opacity: 0.15;"></i>
+    </div>
+    
+    <!-- Background subtle geometric decoration -->
+    <div class="position-absolute top-50 start-50 translate-middle" style="opacity: 0.05; pointer-events: none;">
+      <i class="bi bi-globe" style="font-size: 25rem;"></i>
+    </div>
+  </div>
+
+  <!-- Quick Select Countries -->
+  <div class="mb-5 text-center">
+    <h5 class="text-muted mb-3 fw-semibold">Pesquisas Populares:</h5>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+      <button 
+        *ngFor="let country of quickCountries" 
+        (click)="searchQuickCountry(country)" 
+        type="button" 
+        class="btn btn-outline-primary rounded-pill px-4 py-2 fw-semibold hover-lift"
+      >
+        <span class="me-1">
+          <i class="bi bi-geo-alt-fill"></i>
+        </span>
+        {{ country }}
+      </button>
+    </div>
+  </div>
+
+  <hr class="my-5 opacity-10">
+
+  <!-- History and Chart Section -->
+  <div class="row">
+    <!-- Left: History List -->
+    <div class="col-lg-5 mb-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="fw-bold mb-0 text-gradient">
+            <i class="bi bi-clock-history me-2 text-primary"></i>Histórico
+          </h4>
+          <button 
+            *ngIf="history.length > 0" 
+            (click)="clearHistory()" 
+            class="btn btn-sm btn-outline-danger rounded-pill"
+          >
+            Limpar tudo
+          </button>
+        </div>
+
+        <div *ngIf="history.length === 0" class="text-center py-5 text-muted">
+          <i class="bi bi-search-heart display-1 text-muted opacity-25 mb-3"></i>
+          <p class="mb-0">Nenhuma pesquisa recente.</p>
+          <small>Faça uma busca acima para começar.</small>
+        </div>
+
+        <div *ngIf="history.length > 0" class="list-group list-group-flush overflow-auto" style="max-height: 400px;">
+          <a 
+            *ngFor="let item of history" 
+            (click)="searchQuickCountry(item.country)" 
+            style="cursor: pointer;"
+            class="list-group-item list-group-item-action border-0 px-0 py-3 d-flex align-items-center justify-content-between animate-slide-in"
+          >
+            <div class="d-flex align-items-center">
+              <div class="bg-primary-subtle text-primary rounded-circle p-2 me-3">
+                <i class="bi bi-search"></i>
+              </div>
+              <div>
+                <h6 class="mb-0 fw-bold">{{ item.country }}</h6>
+                <small class="text-muted d-block">{{ item.date }}</small>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-2 fw-semibold">
+                {{ item.count }} univ.
+              </span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Chart -->
+    <div class="col-lg-7 mb-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+        <h4 class="fw-bold mb-4 text-gradient">
+          <i class="bi bi-bar-chart-line me-2 text-primary"></i>Distribuição de Resultados
+        </h4>
+
+        <div *ngIf="history.length === 0" class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center h-100">
+          <i class="bi bi-graph-up display-1 text-muted opacity-25 mb-3"></i>
+          <p class="mb-0">Gráfico indisponível.</p>
+          <small>O gráfico mostrará o volume de universidades por país pesquisado.</small>
+        </div>
+
+        <div *ngIf="history.length > 0" class="chart-container position-relative flex-grow-1" style="min-height: 320px; height: 100%;">
+          <canvas #chartCanvas></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

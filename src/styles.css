@@ -1,1 +1,167 @@
-/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary-gradient: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  --accent-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  --card-hover-shadow: 0 15px 35px rgba(13, 110, 253, 0.08);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Custom Text Gradient */
+.text-gradient {
+  background: linear-gradient(135deg, #0d6efd 0%, #023e8a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+body.dark-theme .text-gradient {
+  background: linear-gradient(135deg, #3a86c8 0%, #70e000 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2.5s infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); opacity: 0.95; }
+  100% { transform: scale(1); }
+}
+
+/* Micro-interactions & Hovers */
+.hover-scale {
+  transition: transform 0.2s ease-in-out;
+}
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+.hover-lift {
+  transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+}
+
+/* University Card Styles */
+.card-university {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid rgba(0, 0, 0, 0.03) !important;
+}
+
+.card-university:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-hover-shadow) !important;
+  border-color: rgba(13, 110, 253, 0.15) !important;
+}
+
+/* Favorites Button animations */
+.btn-favorite i {
+  transition: transform 0.2s ease;
+}
+.btn-favorite:hover i {
+  transform: scale(1.2);
+}
+
+/* Theme Toggle Button custom adjustments */
+.btn-theme-toggle i {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.btn-theme-toggle:hover i {
+  transform: rotate(360deg);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Dark mode specific fine-tuning */
+body.dark-theme {
+  background-color: #121212 !important;
+}
+
+body.dark-theme .card {
+  background-color: #1e1e1e !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-theme .bg-light {
+  background-color: #2b2b2b !important;
+}
+
+body.dark-theme .text-dark-emphasis {
+  color: #f8f9fa !important;
+}
+
+body.dark-theme .list-group-item {
+  background-color: transparent !important;
+  color: #f8f9fa !important;
+}
+
+body.dark-theme .list-group-item:hover {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
